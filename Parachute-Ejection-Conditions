@@ -1,0 +1,58 @@
+#include <iostream>
+
+class Rocket {
+private:
+    double velocity;    // 속도 (m/s)
+    double acceleration; // 가속도 (m/s^2)
+    double fuel;       // 남아있는 연료량 (kg)
+    bool parachuteDeployed; // 낙하산이 전개되었는지 여부
+
+public:
+    // 생성자
+    Rocket(double initialFuel) : velocity(100), acceleration(-9.81), fuel(initialFuel), parachuteDeployed(false) {}
+
+    // 연료 소모 시뮬레이션
+    void burnFuel() {
+        if (fuel > 0) {
+            fuel -= 1; // 연료 1kg 소모
+        }
+    }
+
+    // 낙하산 사출 조건 검사
+    void checkParachuteDeployment() {
+        if (velocity == 0 && acceleration == -9.81 && fuel <= 0) {
+            deployParachute();
+        }
+    }
+
+    // 낙하산 사출 함수
+    void deployParachute() {
+        if (!parachuteDeployed) {
+            parachuteDeployed = true;
+            std::cout << "🪂 낙하산 전개 완료!" << std::endl;
+        }
+    }
+
+    // 상태 업데이트 및 출력
+    void updateStatus() {
+        burnFuel();
+        if (fuel <= 0) velocity = 0; // 연료가 없으면 속도 0
+        checkParachuteDeployment();
+
+        std::cout << "속도: " << velocity << " m/s, 가속도: " << acceleration 
+                  << " m/s^2, 남은 연료: " << fuel << " kg, 낙하산 전개: " 
+                  << (parachuteDeployed ? "Yes" : "No") << std::endl;
+    }
+};
+
+// 메인 함수
+int main() {
+    Rocket rocket(5); // 초기 연료 5kg 설정
+
+    while (true) {
+        rocket.updateStatus();
+        if (rocket.checkParachuteDeployment()) break;
+    }
+
+    return 0;
+}
